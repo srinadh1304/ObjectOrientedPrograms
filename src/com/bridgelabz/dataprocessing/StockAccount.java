@@ -1,5 +1,4 @@
 package com.bridgelabz.dataprocessing;
-
 import java.util.Scanner;	
 import com.bridgelabz.datastructures.*;
 import java.time.LocalDateTime;
@@ -17,7 +16,7 @@ public class StockAccount {
 		Scanner sc = new Scanner(System.in);
 		int count = sc.nextInt();
 		for(int i=0;i<count;i++) {
-			System.out.println("enter the Stock Symble");
+			System.out.println("enter the Stock Symbol");
 			String symble = sc.next();
 			System.out.println("Enter the number of shares");
 			int numOfShares = sc.nextInt();
@@ -30,7 +29,22 @@ public class StockAccount {
 		}
 	}
 	
+	public void removeCompanyShares(String symbol) {
+		Scanner sc = new Scanner(System.in);
+		MyNode<CompanyShare> tempNode = (MyNode<CompanyShare>) myShareList.head;
+		while(tempNode != null) {
+			String currentSymbol = tempNode.getKey().getStockSymbol();
+			if(currentSymbol.equals(symbol)) {
+				myShareList.delete(tempNode.getKey());
+				System.out.println("deleted Company share with symbol : "+tempNode.getKey().getStockSymbol());
+				return;
+			}
+			tempNode = (MyNode<CompanyShare>)tempNode.getNext();
+		}
+		System.out.println("CompanyShare with symbol "+symbol+" is not found");
+	}
 	public double valueOf() {
+		this.total = 0.0;
 		MyNode<CompanyShare> tempNode = (MyNode<CompanyShare>) myShareList.head;
 		while(tempNode != null) {
 			this.total += tempNode.getKey().getValue();
