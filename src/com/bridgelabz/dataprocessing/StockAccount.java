@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 public class StockAccount {
 	MyLinkedList<CompanyShare> myShareList;
+	MyStack<String> purchasedStack = new MyStack<String>();
+	MyStack<String> soldStack = new MyStack<String>();
 	Double total ;
 	public StockAccount() {
 		myShareList =new MyLinkedList<CompanyShare>();
@@ -25,10 +27,10 @@ public class StockAccount {
 			CompanyShare stock = new CompanyShare(symble,numOfShares,price);
 			MyNode<CompanyShare> myStockNode = new MyNode<CompanyShare>(stock);
 			myShareList.append(myStockNode);
-			
+
 		}
 	}
-	
+
 	public void removeCompanyShares(String symbol) {
 		Scanner sc = new Scanner(System.in);
 		MyNode<CompanyShare> tempNode = (MyNode<CompanyShare>) myShareList.head;
@@ -52,7 +54,7 @@ public class StockAccount {
 		}
 		return this.total;
 	}
-	
+
 	public void buy(int amount, String symbol) {
 		MyNode<CompanyShare> tempNode = (MyNode<CompanyShare>) myShareList.head;
 		while(tempNode != null) {
@@ -62,6 +64,7 @@ public class StockAccount {
 				double value = tempNode.getKey().getPricePerShare() * (amount+currentShares);
 				this.total = value;
 				tempNode.getKey().setValue(value);
+				purchasedStack.push(symbol);
 				System.out.println(" added "+amount+" shares to stockSymbol "+symbol+" updated value is "+value);
 				return;
 			}
@@ -69,7 +72,7 @@ public class StockAccount {
 		}
 		System.out.println("Symbol not found");
 	}
-	
+
 	public void sell(int amount, String symbol) {
 		MyNode<CompanyShare> tempNode = (MyNode<CompanyShare>) myShareList.head;
 		while(tempNode != null) {
@@ -83,6 +86,7 @@ public class StockAccount {
 				double value = tempNode.getKey().getPricePerShare() * (currentShares-amount);
 				tempNode.getKey().setValue(value);
 				this.total = value;
+				soldStack.push(symbol);
 				System.out.println(" sold "+amount+" shares of stockSymbol "+symbol+" updated value is "+value);
 				return;
 			}
@@ -90,11 +94,37 @@ public class StockAccount {
 		}
 		System.out.println("Symbol not found");
 	}
-	
+
 	public void printReport() {
 		System.out.println("**** The stock report ****");
 		System.out.println("The total value is : "+ this.total);
 		myShareList.display();
 	}
-	
+
+	public void printStacks() {
+		System.out.println("The purchased stocks are (Latest first) ");
+		MyQueue<String> buffer = new MyQueue<String>();
+		while(!purchasedStack.isEmpty()) {
+			String str = purchasedStack.pop();
+			buffer.enqueue(str);
+			System.out.print(str+" ");
+		}
+		purchasedStack = new MyStack<String>();
+		while(!buffer.isEmpty()) {
+			purchasedStack.push(buffer.dequeue());
+		}
+		System.out.println();
+		buffer = new MyQueue<String>();
+		System.out.println("The sold stocks are (Latest first) ");
+		while(!soldStack.isEmpty()) {
+			String str = soldStack.pop();
+			buffer.enqueue(str);
+			System.out.print(str+" ");
+		}
+		soldStack = new MyStack<String>();
+		while(!buffer.isEmpty()) {
+			soldStack.push(buffer.dequeue());
+		}
+		System.out.println();
+	}
 }
