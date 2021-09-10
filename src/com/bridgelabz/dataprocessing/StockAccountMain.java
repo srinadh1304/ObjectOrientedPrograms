@@ -4,6 +4,9 @@ import java.util.Scanner;
 
 public class StockAccountMain {
 
+
+public class StockAccountMain {
+
 	public static void main(String[] args) {
 		Scanner sc= new Scanner(System.in);
 		System.out.println("Welcome to stock account management program");
@@ -12,7 +15,7 @@ public class StockAccountMain {
 		myStocks.valueOf();
 		boolean flag = true;
 		while(flag) {
-			System.out.println("Select option 1:add Companyshares   2: remove companyshares   3:buy shares   4:sell shares   5: get Report  6:get value  7:exit");
+			System.out.println("Select option 1:add Companyshares   2: remove companyshares   3:buy shares   4:sell shares   5: get Report  6:get value  7:purchased-sold stocks  8:exit");
 			int option = sc.nextInt();
 			switch(option) {
 				case 1:
@@ -44,6 +47,9 @@ public class StockAccountMain {
 				case 6:
 					System.out.println("the total value of shares : " +myStocks.valueOf());
 					break;
+				case 7:
+					myStocks.printStacks();
+					break;
 				default:
 					flag = false;
 					break;	
@@ -53,6 +59,7 @@ public class StockAccountMain {
 		sc.close();
 
 	}
+
 
 
 }
