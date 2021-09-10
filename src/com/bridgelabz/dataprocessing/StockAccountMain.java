@@ -1,5 +1,4 @@
 package com.bridgelabz.dataprocessing;
-
 import java.util.Scanner;
 
 public class StockAccountMain {
@@ -12,7 +11,7 @@ public class StockAccountMain {
 		myStocks.valueOf();
 		boolean flag = true;
 		while(flag) {
-			System.out.println("Select option 1:add Companyshares   2: remove companyshares   3:buy shares   4:sell shares   5: get Report  6:get value  7:purchased-sold stocks  8:exit");
+			System.out.println("Select 1:add Companyshares   2: remove companyshares   3:buy shares   4:sell shares   5: get Report  6:get value  7:purchased-sold stocks  8:timeline   9:exit");
 			int option = sc.nextInt();
 			switch(option) {
 				case 1:
@@ -30,6 +29,7 @@ public class StockAccountMain {
 					System.out.println("enter the stock symbol	");
 					String symbol = sc.next();
 					myStocks.buy(amount, symbol);
+					myStocks.valueOf();
 					break;
 				case 4:
 					System.out.println("enter the amount of share");
@@ -37,6 +37,7 @@ public class StockAccountMain {
 					System.out.println("enter the stock symbol");
 					String symbol1 = sc.next();
 					myStocks.sell(amount1, symbol1);
+					myStocks.valueOf();
 					break;
 				case 5:
 					myStocks.printReport();
@@ -47,6 +48,9 @@ public class StockAccountMain {
 				case 7:
 					myStocks.printStacks();
 					break;
+				case 8:
+					myStocks.printTimeLineQueue();
+					break;
 				default:
 					flag = false;
 					break;	
@@ -56,7 +60,5 @@ public class StockAccountMain {
 		sc.close();
 
 	}
-
-
 
 }
