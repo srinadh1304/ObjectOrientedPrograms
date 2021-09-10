@@ -1,14 +1,17 @@
 package com.bridgelabz.dataprocessing;
+
 import java.util.Scanner;	
 import com.bridgelabz.datastructures.*;
 import java.time.LocalDateTime;
-
+import java.time.format.DateTimeFormatter;  
 
 public class StockAccount {
 	MyLinkedList<CompanyShare> myShareList;
 	MyStack<String> purchasedStack = new MyStack<String>();
 	MyStack<String> soldStack = new MyStack<String>();
+	MyQueue<String> transactionQueue = new MyQueue<String>();
 	Double total ;
+	DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");  
 	public StockAccount() {
 		myShareList =new MyLinkedList<CompanyShare>();
 		total = 0.0;
@@ -27,10 +30,10 @@ public class StockAccount {
 			CompanyShare stock = new CompanyShare(symble,numOfShares,price);
 			MyNode<CompanyShare> myStockNode = new MyNode<CompanyShare>(stock);
 			myShareList.append(myStockNode);
-
+			
 		}
 	}
-
+	
 	public void removeCompanyShares(String symbol) {
 		Scanner sc = new Scanner(System.in);
 		MyNode<CompanyShare> tempNode = (MyNode<CompanyShare>) myShareList.head;
@@ -54,7 +57,7 @@ public class StockAccount {
 		}
 		return this.total;
 	}
-
+	
 	public void buy(int amount, String symbol) {
 		MyNode<CompanyShare> tempNode = (MyNode<CompanyShare>) myShareList.head;
 		while(tempNode != null) {
@@ -66,13 +69,15 @@ public class StockAccount {
 				tempNode.getKey().setValue(value);
 				purchasedStack.push(symbol);
 				System.out.println(" added "+amount+" shares to stockSymbol "+symbol+" updated value is "+value);
+				tempNode.getKey().setDateTime(LocalDateTime.now());
+				transactionQueue.enqueue(LocalDateTime.now().format(format).toString());
 				return;
 			}
 			tempNode = (MyNode<CompanyShare>)tempNode.getNext();
 		}
 		System.out.println("Symbol not found");
 	}
-
+	
 	public void sell(int amount, String symbol) {
 		MyNode<CompanyShare> tempNode = (MyNode<CompanyShare>) myShareList.head;
 		while(tempNode != null) {
@@ -88,42 +93,59 @@ public class StockAccount {
 				this.total = value;
 				soldStack.push(symbol);
 				System.out.println(" sold "+amount+" shares of stockSymbol "+symbol+" updated value is "+value);
+				tempNode.getKey().setDateTime(LocalDateTime.now());
+				transactionQueue.enqueue(LocalDateTime.now().format(format).toString());
 				return;
 			}
 			tempNode = (MyNode<CompanyShare>)tempNode.getNext();
 		}
 		System.out.println("Symbol not found");
 	}
-
+	
 	public void printReport() {
 		System.out.println("**** The stock report ****");
 		System.out.println("The total value is : "+ this.total);
 		myShareList.display();
 	}
-
+	
 	public void printStacks() {
 		System.out.println("The purchased stocks are (Latest first) ");
-		MyQueue<String> buffer = new MyQueue<String>();
+		MyStack<String> buffer = new MyStack<String>();
 		while(!purchasedStack.isEmpty()) {
 			String str = purchasedStack.pop();
-			buffer.enqueue(str);
+			buffer.push(str);
 			System.out.print(str+" ");
 		}
 		purchasedStack = new MyStack<String>();
 		while(!buffer.isEmpty()) {
-			purchasedStack.push(buffer.dequeue());
+			purchasedStack.push(buffer.pop());
 		}
 		System.out.println();
-		buffer = new MyQueue<String>();
+		buffer = new MyStack<String>();
 		System.out.println("The sold stocks are (Latest first) ");
 		while(!soldStack.isEmpty()) {
 			String str = soldStack.pop();
-			buffer.enqueue(str);
+			buffer.push(str);
 			System.out.print(str+" ");
 		}
 		soldStack = new MyStack<String>();
 		while(!buffer.isEmpty()) {
-			soldStack.push(buffer.dequeue());
+			soldStack.push(buffer.pop());
+		}
+		System.out.println();
+	}
+	
+	public void printTimeLineQueue() {
+		System.out.println(" transactions processed till now");
+		MyQueue<String> buffer = new MyQueue<String>();
+		while(!transactionQueue.isEmpty()) {
+			String str = transactionQueue.dequeue();
+			buffer.enqueue(str);
+			System.out.print(str + " -- ");
+		}
+		transactionQueue = new MyQueue<String>();
+		while(!buffer.isEmpty()) {
+			transactionQueue.enqueue(buffer.dequeue());
 		}
 		System.out.println();
 	}
